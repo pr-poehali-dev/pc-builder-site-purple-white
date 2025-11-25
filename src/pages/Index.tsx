@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 import { products, categories, type Product } from '@/data/products';
+import PCBuilder from '@/components/PCBuilder';
 
 interface CartItem {
   product: Product;
@@ -19,6 +20,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'builder' | 'catalog'>('builder');
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
@@ -64,13 +66,32 @@ const Index = () => {
       <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-purple-600">
-                <Icon name="Cpu" className="h-6 w-6 text-white" />
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-purple-600">
+                  <Icon name="Cpu" className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-foreground">PC Builder</h1>
+                  <p className="text-xs text-muted-foreground">Собери ПК своей мечты</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">PC Builder</h1>
-                <p className="text-xs text-muted-foreground">Собери ПК своей мечты</p>
+              
+              <div className="hidden md:flex gap-2">
+                <Button
+                  variant={activeTab === 'builder' ? 'default' : 'ghost'}
+                  onClick={() => setActiveTab('builder')}
+                >
+                  <Icon name="Settings" className="mr-2 h-4 w-4" />
+                  Конструктор
+                </Button>
+                <Button
+                  variant={activeTab === 'catalog' ? 'default' : 'ghost'}
+                  onClick={() => setActiveTab('catalog')}
+                >
+                  <Icon name="ShoppingBag" className="mr-2 h-4 w-4" />
+                  Каталог
+                </Button>
               </div>
             </div>
 
@@ -167,17 +188,21 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <section className="mb-12 text-center">
-          <h2 className="mb-4 text-4xl font-bold text-foreground">
-            Собери свой идеальный ПК
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Выбирайте из актуальных комплектующих 2024-2025 года. Проверка совместимости,
-            детальные характеристики и лучшие цены.
-          </p>
-        </section>
+        {activeTab === 'builder' ? (
+          <PCBuilder />
+        ) : (
+          <>
+            <section className="mb-12 text-center">
+              <h2 className="mb-4 text-4xl font-bold text-foreground">
+                Каталог комплектующих
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Выбирайте из актуальных комплектующих 2024-2025 года. Проверка совместимости,
+                детальные характеристики и лучшие цены.
+              </p>
+            </section>
 
-        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="space-y-6">
+            <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="space-y-6">
           <TabsList className="flex flex-wrap justify-center gap-2 h-auto bg-white/50 p-2 rounded-xl">
             <TabsTrigger value="all" className="rounded-lg">
               <Icon name="Layers" className="mr-2 h-4 w-4" />
@@ -297,6 +322,9 @@ const Index = () => {
           )}
         </DialogContent>
       </Dialog>
+      </>
+        )}
+      </main>
 
       <footer className="mt-20 border-t bg-white py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
